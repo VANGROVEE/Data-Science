@@ -5,7 +5,6 @@ https://drive.google.com/file/d/1BSYuPTJ4iM9USdwLJ1S0_uLOp4lMplgk/view?usp=shari
 ```
 
 Setelah di-download, extract file dan pastikan struktur folder sebagai berikut:
-data/
-└── raw/
+data/raw/
 
 Kemudian jalankan notebook
