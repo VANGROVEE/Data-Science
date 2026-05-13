@@ -15,7 +15,7 @@ Dataset citra tanaman menggunakan data sekunder dari Kaggle:
 
 ## 🚀 Analisis EDA
 Kami telah melakukan analisis mendalam terhadap 47.516 baris data citra yang mencakup:
-* Sebaran kasus di Kabupaten Karo, Simalungun, Dairi, Langkat, dan Deli Serdang.
+* Sebaran kasus di Provinsi Sumatera Utara tepatnya pada Kabupaten Karo, Simalungun, Dairi, Langkat, dan Deli Serdang.
 * Tren laporan penyakit dari Mei 2024 hingga Mei 2026.
 * Identifikasi penyakit dominan seperti Late Blight pada Tomat dan Rust pada Jagung.
 
