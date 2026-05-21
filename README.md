@@ -16,17 +16,17 @@ Untuk menjalankan dashboard Streamlit di komputer lokal Anda, ikuti langkah-lang
    cd Data-Science
 
 2. **Buat dan Aktifkan Virtual Environment (Direkomendasikan):**
-   
-  python -m venv venv
 
-   Windows (PowerShell):  .\venv\Scripts\Activate.ps1
-   
-   Mac/Linux:  source venv/bin/activate
+         python -m venv venv
 
-3. **Install Library yang Dibutuhkan:**
+         Windows (PowerShell):  .\venv\Scripts\Activate.ps1
+
+         Mac/Linux:  source venv/bin/activate
+
+4. **Install Library yang Dibutuhkan:**
 pip install streamlit pandas plotly
 
-4. **Jalankan Aplikasi Streamlit:**
+5. **Jalankan Aplikasi Streamlit:**
 streamlit run app.py
 
 
