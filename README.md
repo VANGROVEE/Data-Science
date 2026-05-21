@@ -17,9 +17,9 @@ Untuk menjalankan dashboard Streamlit di komputer lokal Anda, ikuti langkah-lang
 
 2. **Buat dan Aktifkan Virtual Environment (Direkomendasikan):**
   python -m venv venv
-  # Windows (PowerShell)
+   Windows (PowerShell)
   .\venv\Scripts\Activate.ps1
-  # Mac/Linux
+   Mac/Linux
   source venv/bin/activate
 
 3. **Install Library yang Dibutuhkan:**
