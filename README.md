@@ -24,7 +24,8 @@ Untuk menjalankan dashboard Streamlit di komputer lokal Anda, ikuti langkah-lang
          Mac/Linux:  source venv/bin/activate
 
 3. **Install Library yang Dibutuhkan:**
-pip install streamlit pandas plotly
+   ```bash
+   pip install -r requirements.txt
 
 4. **Jalankan Aplikasi Streamlit:**
 streamlit run app.py
