@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 st.title("🌿 VANGROVE: AgroAnalytics Hub")
-st.markdown("Sistem pemantauan kesehatan tanaman untuk wilayah Sumatera Utara.")
+st.markdown("Sistem pemantauan kesehatan tanaman untuk wilayah Provinsi Sumatera Utara.")
 st.markdown("---")
 
 # 2. Memuat Data
@@ -47,12 +47,12 @@ col3.metric("Jumlah Penyakit Terdeteksi", df_filtered['disease'].nunique())
 
 st.markdown("---")
 
-# 5. MEMBAGI HALAMAN MENJADI 5 TAB (Tambah Tab Solusi)
+# 5. MEMBAGI HALAMAN MENJADI 5 TAB
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🗺️ Peta Sebaran (Web-GIS)", 
     "📈 Tren Waktu (EWS)", 
-    "📊 Distribusi Penyakit", 
-    "💡 Solusi & Rekomendasi",  # <-- TAB BARU KITA
+    "📊 Analisis Bisnis & EDA",  # <-- Nama Tab 3 Diperbarui
+    "💡 Solusi & Rekomendasi", 
     "📋 Data Mentah"
 ])
 
@@ -83,30 +83,52 @@ with tab2:
     else:
         st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
 
-# --- TAB 3: GRAFIK BATANG ---
+# --- TAB 3: ANALISIS BISNIS & EDA (BARU) ---
 with tab3:
-    st.subheader("📊 Distribusi Kasus Berdasarkan Penyakit")
-    penyakit_count = df_filtered['disease'].value_counts().reset_index()
-    penyakit_count.columns = ['Penyakit', 'Jumlah Kasus']
-    fig_bar = px.bar(penyakit_count, x='Penyakit', y='Jumlah Kasus', color='Penyakit')
-    st.plotly_chart(fig_bar, use_container_width=True)
+    st.subheader("📊 Analisis Komprehensif (Menjawab Pertanyaan Bisnis)")
+    
+    if not df_filtered.empty:
+        colA, colB = st.columns(2) # Membagi layar menjadi 2 kolom untuk layout yang lebih rapi
+        
+        with colA:
+            # Grafik 1: Komoditas Paling Rentan
+            st.markdown("**1. Proporsi Kasus Berdasarkan Jenis Tanaman**")
+            plant_count = df_filtered['plant'].value_counts().reset_index()
+            plant_count.columns = ['Tanaman', 'Jumlah Kasus']
+            fig_plant = px.pie(plant_count, values='Jumlah Kasus', names='Tanaman', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel)
+            st.plotly_chart(fig_plant, use_container_width=True)
+            
+        with colB:
+            # Grafik 2: Sebaran Kasus per Kabupaten
+            st.markdown("**2. Sebaran Kasus per Wilayah (Kabupaten)**")
+            loc_count = df_filtered['location'].value_counts().reset_index()
+            loc_count.columns = ['Lokasi', 'Jumlah Kasus']
+            fig_loc = px.bar(loc_count, x='Lokasi', y='Jumlah Kasus', color='Lokasi', text_auto=True)
+            fig_loc.update_layout(showlegend=False) # Menyembunyikan legenda karena nama lokasi sudah ada di sumbu X
+            st.plotly_chart(fig_loc, use_container_width=True)
+
+        st.markdown("---")
+        
+        # Grafik 3: Distribusi Penyakit Spesifik
+        st.markdown("**3. Distribusi Kasus Berdasarkan Jenis Penyakit (Spesifik)**")
+        penyakit_count = df_filtered['disease'].value_counts().reset_index()
+        penyakit_count.columns = ['Penyakit', 'Jumlah Kasus']
+        # Dibuat horizontal (orientation='h') agar teks nama penyakit tidak bertumpuk
+        fig_bar = px.bar(penyakit_count, x='Jumlah Kasus', y='Penyakit', color='Penyakit', orientation='h', text_auto=True) 
+        fig_bar.update_layout(yaxis={'categoryorder':'total ascending'}) # Mengurutkan dari yang terbanyak
+        st.plotly_chart(fig_bar, use_container_width=True)
+    else:
+        st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
 
 # --- TAB 4: SOLUSI & REKOMENDASI (ACTIONABLE INSIGHTS) ---
 with tab4:
     st.subheader("💡 Panduan Penanganan Agronomis")
-    st.markdown("Rekomendasi tindakan respons cepat berdasarkan penyakit yang terdeteksi dari filter Anda saat ini.")
-    
     if not df_filtered.empty:
-        # Mengambil daftar penyakit unik yang sedang terfilter
         penyakit_unik = df_filtered['disease'].unique()
-        
         for p in penyakit_unik:
-            # Mengambil 1 baris sampel untuk setiap penyakit guna mendapatkan kondisi & rekomendasinya
             sampel = df_filtered[df_filtered['disease'] == p].iloc[0]
             kondisi = sampel['condition']
             rekomendasi = sampel['recommendation']
-            
-            # Membuat kotak (expander) yang rapi untuk setiap penyakit
             with st.expander(f"🛠️ Tindakan untuk: **{p}**"):
                 st.write(f"**Pemicu Lingkungan:** {kondisi}")
                 st.info(f"**Saran Penanganan:** {rekomendasi}")
