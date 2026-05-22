@@ -23,10 +23,10 @@ Untuk menjalankan dashboard Streamlit di komputer lokal Anda, ikuti langkah-lang
 
          Mac/Linux:  source venv/bin/activate
 
-4. **Install Library yang Dibutuhkan:**
+3. **Install Library yang Dibutuhkan:**
 pip install streamlit pandas plotly
 
-5. **Jalankan Aplikasi Streamlit:**
+4. **Jalankan Aplikasi Streamlit:**
 streamlit run app.py
 
 
@@ -43,6 +43,7 @@ Kami telah melakukan analisis mendalam terhadap 47.516 baris data citra yang men
 
 * **Peta Sebaran Web-GIS:** Visualisasi geografis interaktif titik koordinat kasus di Provinsi Sumatera Utara, tepatnya pada Kabupaten Karo, Simalungun, Dairi, Langkat, dan Deli Serdang menggunakan Plotly OpenStreetMap.
 * **Early Warning System (EWS):** Grafik tren bulanan interaktif dari April 2024 hingga April 2026 untuk memantau lonjakan kasus dan mendeteksi potensi wabah secara dini.
+* **Analisis Bisnis Komprehensif:** Pemetaan proporsi tanaman paling rentan, sebaran kasus per kabupaten, dan distribusi penyakit spesifik untuk menjawab 5 pertanyaan bisnis utama.
 * **Actionable Insights & Solusi:** Panel panduan rekomendasi otomatis yang menampilkan pemicu lingkungan serta saran penanganan agronomis berdasarkan jenis penyakit dominan yang terdeteksi (seperti *Late Blight* pada Tomat dan *Rust* pada Jagung).
 
 Dikembangkan sebagai bagian dari Proyek Capstone VANGROVE.
