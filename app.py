@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🌿 VANGROVE: AgroAnalytics Hub")
+st.title("🌿 VANGROVE")
 st.markdown("Sistem pemantauan kesehatan tanaman untuk wilayah Provinsi Sumatera Utara.")
 st.markdown("---")
 
@@ -18,6 +18,8 @@ st.markdown("---")
 def load_data():
     df = pd.read_csv("cleaned_dataset_final.csv")
     df['date'] = pd.to_datetime(df['date'])
+    # Mengubah format penamaan penyakit menjadi Title Case dan menghapus underscore (_)
+    df['disease'] = df['disease'].astype(str).str.replace('_', ' ', regex=False).str.title()
     return df
 
 df = load_data()
@@ -51,7 +53,7 @@ st.markdown("---")
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🗺️ Peta Sebaran (Web-GIS)", 
     "📈 Tren Waktu (EWS)", 
-    "📊 Analisis Bisnis & EDA",  # <-- Nama Tab 3 Diperbarui
+    "📊 Analisis Bisnis & EDA", 
     "💡 Solusi & Rekomendasi", 
     "📋 Data Mentah"
 ])
@@ -83,15 +85,14 @@ with tab2:
     else:
         st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
 
-# --- TAB 3: ANALISIS BISNIS & EDA (BARU) ---
+# --- TAB 3: ANALISIS BISNIS & EDA ---
 with tab3:
     st.subheader("📊 Analisis Komprehensif (Menjawab Pertanyaan Bisnis)")
     
     if not df_filtered.empty:
-        colA, colB = st.columns(2) # Membagi layar menjadi 2 kolom untuk layout yang lebih rapi
+        colA, colB = st.columns(2)
         
         with colA:
-            # Grafik 1: Komoditas Paling Rentan
             st.markdown("**1. Proporsi Kasus Berdasarkan Jenis Tanaman**")
             plant_count = df_filtered['plant'].value_counts().reset_index()
             plant_count.columns = ['Tanaman', 'Jumlah Kasus']
@@ -99,28 +100,25 @@ with tab3:
             st.plotly_chart(fig_plant, use_container_width=True)
             
         with colB:
-            # Grafik 2: Sebaran Kasus per Kabupaten
             st.markdown("**2. Sebaran Kasus per Wilayah (Kabupaten)**")
             loc_count = df_filtered['location'].value_counts().reset_index()
             loc_count.columns = ['Lokasi', 'Jumlah Kasus']
             fig_loc = px.bar(loc_count, x='Lokasi', y='Jumlah Kasus', color='Lokasi', text_auto=True)
-            fig_loc.update_layout(showlegend=False) # Menyembunyikan legenda karena nama lokasi sudah ada di sumbu X
+            fig_loc.update_layout(showlegend=False)
             st.plotly_chart(fig_loc, use_container_width=True)
 
         st.markdown("---")
         
-        # Grafik 3: Distribusi Penyakit Spesifik
         st.markdown("**3. Distribusi Kasus Berdasarkan Jenis Penyakit (Spesifik)**")
         penyakit_count = df_filtered['disease'].value_counts().reset_index()
         penyakit_count.columns = ['Penyakit', 'Jumlah Kasus']
-        # Dibuat horizontal (orientation='h') agar teks nama penyakit tidak bertumpuk
-        fig_bar = px.bar(penyakit_count, x='Jumlah Kasus', y='Penyakit', color='Penyakit', orientation='h', text_auto=True) 
-        fig_bar.update_layout(yaxis={'categoryorder':'total ascending'}) # Mengurutkan dari yang terbanyak
+        fig_bar = px.bar(penyakit_count, x='Jumlah Kasus', y='Penyakit', color='Penyakit', orientation='h', text_auto=True)
+        fig_bar.update_layout(yaxis={'categoryorder':'total ascending'})
         st.plotly_chart(fig_bar, use_container_width=True)
     else:
         st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
 
-# --- TAB 4: SOLUSI & REKOMENDASI (ACTIONABLE INSIGHTS) ---
+# --- TAB 4: SOLUSI & REKOMENDASI ---
 with tab4:
     st.subheader("💡 Panduan Penanganan Agronomis")
     if not df_filtered.empty:
