@@ -1,4 +1,4 @@
-# VANGROVE: AgroAnalytics Hub & Early Warning System
+# VANGROVE
 
 Sistem pemantauan kesehatan tanaman berbasis AI dan Web-GIS untuk wilayah Provinsi Sumatera Utara.
 
