@@ -24,7 +24,7 @@ def load_data():
 
 df = load_data()
 
-# 3. Membuat Sidebar untuk Filter Interaktif
+# 3. Membuat Sidebar untuk Filter Interaktif (Kembali ke Multiselect / Select All)
 st.sidebar.header("🔍 Filter Data")
 
 lokasi_pilihan = st.sidebar.multiselect(
@@ -39,6 +39,7 @@ tanaman_pilihan = st.sidebar.multiselect(
     default=df['plant'].unique()
 )
 
+# Filter menggunakan .isin() karena bisa memilih lebih dari satu tanaman
 df_filtered = df[(df['location'].isin(lokasi_pilihan)) & (df['plant'].isin(tanaman_pilihan))]
 
 # 4. Menampilkan Metrik Berdasarkan Filter
@@ -62,6 +63,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 with tab1:
     st.subheader("🗺️ Peta Sebaran Kasus Penyakit di Sumatera Utara")
     if not df_filtered.empty:
+        # Warna peta dikembalikan berdasarkan 'plant' karena tanaman bisa dipilih banyak
         fig_map = px.scatter_mapbox(
             df_filtered, lat="lat", lon="lon", color="plant",
             size_max=12, zoom=7.5, mapbox_style="open-street-map",
@@ -78,6 +80,7 @@ with tab1:
 with tab2:
     st.subheader("📈 Analisis Tren Laporan Kasus Bulanan")
     if not df_filtered.empty:
+        # Menampilkan tren waktu berdasarkan tren kombinasi penyakit
         tren_data = df_filtered.groupby([pd.Grouper(key='date', freq='ME'), 'disease']).size().reset_index(name='Jumlah Kasus')
         fig_line = px.line(tren_data, x='date', y='Jumlah Kasus', color='disease', markers=True, line_shape='spline')
         fig_line.update_layout(xaxis_title="Bulan", yaxis_title="Jumlah Kasus", hovermode="x unified")
@@ -93,6 +96,7 @@ with tab3:
         colA, colB = st.columns(2)
         
         with colA:
+            # Grafik 1: Kembali menampilkan proporsi perbandingan antar jenis tanaman
             st.markdown("**1. Proporsi Kasus Berdasarkan Jenis Tanaman**")
             plant_count = df_filtered['plant'].value_counts().reset_index()
             plant_count.columns = ['Tanaman', 'Jumlah Kasus']
@@ -109,6 +113,7 @@ with tab3:
 
         st.markdown("---")
         
+        # Grafik 3: Menampilkan distribusi penyakit spesifik
         st.markdown("**3. Distribusi Kasus Berdasarkan Jenis Penyakit (Spesifik)**")
         penyakit_count = df_filtered['disease'].value_counts().reset_index()
         penyakit_count.columns = ['Penyakit', 'Jumlah Kasus']
@@ -118,16 +123,24 @@ with tab3:
     else:
         st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
 
-# --- TAB 4: SOLUSI & REKOMENDASI ---
+# --- TAB 4: SOLUSI & REKOMENDASI (AKSI OPSI B) ---
 with tab4:
     st.subheader("💡 Panduan Penanganan Agronomis")
     if not df_filtered.empty:
-        penyakit_unik = df_filtered['disease'].unique()
-        for p in penyakit_unik:
-            sampel = df_filtered[df_filtered['disease'] == p].iloc[0]
+        # Mengambil kombinasi unik yang berpasangan antara Jenis Tanaman dan Jenis Penyakit
+        kombinasi_unik = df_filtered[['plant', 'disease']].drop_duplicates().sort_values(by=['plant', 'disease'])
+        
+        for _, row in kombinasi_unik.iterrows():
+            t_nama = row['plant']
+            p_nama = row['disease']
+            
+            # Mengambil data baris pertama yang cocok dengan kombinasi tanaman & penyakit tersebut
+            sampel = df_filtered[(df_filtered['plant'] == t_nama) & (df_filtered['disease'] == p_nama)].iloc[0]
             kondisi = sampel['condition']
             rekomendasi = sampel['recommendation']
-            with st.expander(f"🛠️ Tindakan untuk: **{p}**"):
+            
+            # Menggabungkan nama tanaman dan nama penyakit di bagian Header Expander sesuai permintaan rekan tim
+            with st.expander(f"🛠️ Tindakan untuk: Tanaman **{t_nama}** - Penyakit **{p_nama}**"):
                 st.write(f"**Pemicu Lingkungan:** {kondisi}")
                 st.info(f"**Saran Penanganan:** {rekomendasi}")
     else:
