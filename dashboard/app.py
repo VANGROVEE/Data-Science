@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 st.title("🌿 VANGROVE")
-st.markdown("Sistem pemantauan kesehatan tanaman untuk wilayah Provinsi Sumatera Utara.")
+st.markdown("Sistem pemantauan kesehatan tanaman untuk wilayah Provinsi Sumatera Utara")
 st.markdown("---")
 
 # 2. Memuat Data
@@ -66,13 +66,28 @@ with tab1:
     st.subheader("🗺️ Peta Sebaran Kasus Penyakit di Sumatera Utara")
     if not df_filtered.empty:
         # Warna peta dikembalikan berdasarkan 'plant' karena tanaman bisa dipilih banyak
+        df_filtered['disease_label'] = df_filtered['disease'].apply(
+            lambda x: 'Healthy' if x.lower() == 'healthy' else f'<b>Penyakit:</b> {x.title()}'
+        )
+
+        df_filtered['plant'] = df_filtered['plant'].str.title()
+
         fig_map = px.scatter_mapbox(
             df_filtered, lat="lat", lon="lon", color="plant",
             size_max=12, zoom=7.5, mapbox_style="open-street-map",
             hover_name="location",
-            hover_data={"plant": True, "disease": True, "condition": False, "lat": False, "lon": False},
-            height=600
+            hover_data={"plant": False, "disease": False, "condition": False, "lat": False, "lon": False},
+            height=600,
+            custom_data=['plant', 'disease_label']
         )
+
+        fig_map.update_traces(
+            hovertemplate=
+            "<b>Kabupaten:</b> %{hovertext}<br>" +
+            "<b>Tanaman:</b> %{customdata[0]}<br>" +
+            "%{customdata[1]}<extra></extra>"
+        )
+
         fig_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
         st.plotly_chart(fig_map, use_container_width=True)
     else:
@@ -81,12 +96,75 @@ with tab1:
 # --- TAB 2: TREN WAKTU (EARLY WARNING SYSTEM) ---
 with tab2:
     st.subheader("📈 Analisis Tren Laporan Kasus Bulanan")
+
     if not df_filtered.empty:
-        # Menampilkan tren waktu berdasarkan tren kombinasi penyakit
-        tren_data = df_filtered.groupby([pd.Grouper(key='date', freq='ME'), 'disease']).size().reset_index(name='Jumlah Kasus')
-        fig_line = px.line(tren_data, x='date', y='Jumlah Kasus', color='disease', markers=True, line_shape='spline')
-        fig_line.update_layout(xaxis_title="Bulan", yaxis_title="Jumlah Kasus", hovermode="x unified")
+
+        # Grouping data tren bulanan
+        tren_data = (
+            df_filtered
+            .groupby([pd.Grouper(key='date', freq='ME'), 'disease'])
+            .size()
+            .reset_index(name='Jumlah Kasus')
+        )
+
+        # Mapping disease -> plant
+        plant_map = (
+            df_filtered[['disease', 'plant']]
+            .drop_duplicates()
+        )
+
+        # Merge informasi tanaman
+        tren_data = tren_data.merge(
+            plant_map,
+            on='disease',
+            how='left'
+        )
+
+        # Title Case
+        tren_data['disease'] = tren_data['disease'].str.title()
+        tren_data['plant'] = tren_data['plant'].str.title()
+
+        tren_data['disease_label'] = tren_data['disease'].apply(
+            lambda x: 'Healthy' if x == 'Healthy' else f'<b>Penyakit:</b> {x}'
+        )
+
+        # Membuat line chart
+        # Membuat line chart
+        fig_line = px.line(
+            tren_data,
+            x='date',
+            y='Jumlah Kasus',
+            color='disease',
+            markers=True,
+            line_shape='spline',
+
+            custom_data=['plant', 'disease_label'],
+
+            labels={
+                'plant': 'Tanaman',
+                'disease': 'Penyakit',
+                'date': 'Tanggal',
+                'Jumlah Kasus': 'Jumlah Kasus'
+            }
+        )
+
+        fig_line.update_traces(
+            hovertemplate=
+            "<b>Tanaman:</b> %{customdata[0]}<br>" +
+            "%{customdata[1]}<br>" +
+            "<b>Tanggal:</b> %{x|%b %d, %Y}<br>" +
+            "<b>Jumlah Kasus:</b> %{y}<extra></extra>"
+        )
+
+        # Layout chart
+        fig_line.update_layout(
+            xaxis_title="Bulan",
+            yaxis_title="Jumlah Kasus",
+            hovermode="closest"
+        )
+
         st.plotly_chart(fig_line, use_container_width=True)
+
     else:
         st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
 
@@ -95,6 +173,12 @@ with tab3:
     st.subheader("📊 Analisis Komprehensif (Menjawab Pertanyaan Bisnis)")
     
     if not df_filtered.empty:
+
+        # Title Case
+        df_filtered['plant'] = df_filtered['plant'].str.title()
+        df_filtered['disease'] = df_filtered['disease'].str.title()
+        df_filtered['location'] = df_filtered['location'].str.title()
+        
         colA, colB = st.columns(2)
         
         with colA:
@@ -102,15 +186,49 @@ with tab3:
             st.markdown("**1. Proporsi Kasus Berdasarkan Jenis Tanaman**")
             plant_count = df_filtered['plant'].value_counts().reset_index()
             plant_count.columns = ['Tanaman', 'Jumlah Kasus']
-            fig_plant = px.pie(plant_count, values='Jumlah Kasus', names='Tanaman', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel)
+
+            fig_plant = px.pie(
+                plant_count,
+                values='Jumlah Kasus',
+                names='Tanaman',
+                hole=0.4,
+                color_discrete_sequence=px.colors.qualitative.Pastel
+            )
+
+            # Hover custom
+            fig_plant.update_traces(
+                hovertemplate=
+                "<b>Tanaman:</b> %{label}<br>" +
+                "<b>Jumlah Kasus:</b> %{value}<br>" +
+                "<b>Persentase:</b> %{percent}<extra></extra>"
+            )
+
             st.plotly_chart(fig_plant, use_container_width=True)
             
         with colB:
+            # Grafik 2: wilayah
             st.markdown("**2. Sebaran Kasus per Wilayah (Kabupaten)**")
             loc_count = df_filtered['location'].value_counts().reset_index()
             loc_count.columns = ['Lokasi', 'Jumlah Kasus']
-            fig_loc = px.bar(loc_count, x='Lokasi', y='Jumlah Kasus', color='Lokasi', text_auto=True)
-            fig_loc.update_layout(showlegend=False)
+            fig_loc = px.bar(
+                loc_count,
+                x='Lokasi',
+                y='Jumlah Kasus',
+                color='Lokasi',
+                text_auto=True
+            )
+
+            fig_loc.update_layout(showlegend=False, yaxis_tickformat=",")
+
+            # Hover custom
+            fig_loc.update_traces(
+                hovertemplate=
+                "<b>Kabupaten:</b> %{x}<br>" +
+                "<b>Jumlah Kasus:</b> %{y:,}<extra></extra>",
+
+                texttemplate='%{y:,}'
+            )
+
             st.plotly_chart(fig_loc, use_container_width=True)
 
         st.markdown("---")
@@ -120,12 +238,37 @@ with tab3:
 
         # Mengecualikan Healthy (karena tidak termasuk ke penyakit)
         penyakit_filtered = df_filtered[df_filtered['disease'] != 'Healthy']
-        penyakit_count = penyakit_filtered['disease'].value_counts().reset_index()
+        penyakit_count = (
+            penyakit_filtered
+            .groupby(['disease', 'plant'])
+            .size()
+            .reset_index(name='Jumlah Kasus')
+        )
 
-        penyakit_count = df_filtered['disease'].value_counts().reset_index()
-        penyakit_count.columns = ['Penyakit', 'Jumlah Kasus']
-        fig_bar = px.bar(penyakit_count, x='Jumlah Kasus', y='Penyakit', color='Penyakit', orientation='h', text_auto=True)
-        fig_bar.update_layout(yaxis={'categoryorder':'total ascending'}, showlegend=False)
+        penyakit_count.columns = ['Penyakit', 'Tanaman', 'Jumlah Kasus']
+        fig_bar = px.bar(
+            penyakit_count,
+            x='Jumlah Kasus',
+            y='Penyakit',
+            color='Penyakit',
+            orientation='h',
+            text_auto=True,
+            custom_data=['Tanaman']
+        )
+
+        fig_bar.update_layout(
+            yaxis={'categoryorder':'total ascending'},
+            showlegend=False
+        )
+
+        # Hover custom
+        fig_bar.update_traces(
+            hovertemplate=
+            "<b>Tanaman:</b> %{customdata[0]}<br>" +
+            "<b>Penyakit:</b> %{y}<br>" +
+            "<b>Jumlah Kasus:</b> %{x}<extra></extra>"
+        )
+
         st.plotly_chart(fig_bar, use_container_width=True)
     else:
         st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
