@@ -16,7 +16,7 @@ st.markdown("---")
 # 2. Memuat Data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("cleaned_dataset_final.csv")
+    df = pd.read_csv("dashboard/cleaned_dataset_final.csv")
     df['date'] = pd.to_datetime(df['date'])
     # Mengubah format penamaan penyakit menjadi Title Case dan menghapus underscore (_)
     df['disease'] = df['disease'].astype(str).str.replace('_', ' ', regex=False).str.title()
