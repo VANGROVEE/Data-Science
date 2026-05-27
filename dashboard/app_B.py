@@ -20,27 +20,14 @@ def load_data():
     df['date'] = pd.to_datetime(df['date'])
     # Mengubah format penamaan penyakit menjadi Title Case dan menghapus underscore (_)
     df['disease'] = df['disease'].astype(str).str.replace('_', ' ', regex=False).str.title()
+    # Mengubah format penamaan tanaman menjadi Title Case
+    df['plant'] = df['plant'].astype(str).str.title()
     return df
 
 df = load_data()
 
-# 3. Membuat Sidebar untuk Filter Interaktif (Kembali ke Multiselect / Select All)
-st.sidebar.header("🔍 Filter Data")
-
-lokasi_pilihan = st.sidebar.multiselect(
-    "Pilih Kabupaten/Kota:",
-    options=df['location'].unique(),
-    default=df['location'].unique()
-)
-
-tanaman_pilihan = st.sidebar.multiselect(
-    "Pilih Jenis Tanaman:",
-    options=df['plant'].unique(),
-    default=df['plant'].unique()
-)
-
-# Filter menggunakan .isin() karena bisa memilih lebih dari satu tanaman
-df_filtered = df[(df['location'].isin(lokasi_pilihan)) & (df['plant'].isin(tanaman_pilihan))]
+# 3. Menggunakan seluruh data tanpa filter
+df_filtered = df.copy()
 
 # 4. Menampilkan Metrik Berdasarkan Filter
 col1, col2, col3 = st.columns(3)
@@ -115,10 +102,14 @@ with tab3:
         
         # Grafik 3: Menampilkan distribusi penyakit spesifik
         st.markdown("**3. Distribusi Kasus Berdasarkan Jenis Penyakit (Spesifik)**")
-        penyakit_count = df_filtered['disease'].value_counts().reset_index()
+
+        # Mengecualikan Healthy (karena tidak termasuk ke penyakit)
+        penyakit_filtered = df_filtered[df_filtered['disease'] != 'Healthy']
+        penyakit_count = penyakit_filtered['disease'].value_counts().reset_index()
+
         penyakit_count.columns = ['Penyakit', 'Jumlah Kasus']
         fig_bar = px.bar(penyakit_count, x='Jumlah Kasus', y='Penyakit', color='Penyakit', orientation='h', text_auto=True)
-        fig_bar.update_layout(yaxis={'categoryorder':'total ascending'})
+        fig_bar.update_layout(yaxis={'categoryorder':'total ascending'}, showlegend=False)
         st.plotly_chart(fig_bar, use_container_width=True)
     else:
         st.warning("⚠️ Tidak ada data untuk kombinasi filter yang dipilih.")
@@ -139,8 +130,16 @@ with tab4:
             kondisi = sampel['condition']
             rekomendasi = sampel['recommendation']
             
-            # Menggabungkan nama tanaman dan nama penyakit di bagian Header Expander sesuai permintaan rekan tim
-            with st.expander(f"🛠️ Tindakan untuk: Tanaman **{t_nama}** - Penyakit **{p_nama}**"):
+            # Menggabungkan nama tanaman dan nama penyakit di bagian Header Expander 
+            label_penyakit = (
+                f"Penyakit {p_nama}"
+                if p_nama != "Healthy"
+                else "Healthy"
+            )
+
+            with st.expander(
+                f"🛠️ Tindakan untuk: Tanaman **{t_nama}** - **{label_penyakit}**"
+            ):
                 st.write(f"**Pemicu Lingkungan:** {kondisi}")
                 st.info(f"**Saran Penanganan:** {rekomendasi}")
     else:
