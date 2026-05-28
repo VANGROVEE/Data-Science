@@ -6,8 +6,7 @@
 
 ## Dashboard Preview
 
-![alt text](<dashboard_preview.png>)
-
+![Dashboard Preview](dashboard_preview.png)
 
 ## Tech Stack
 
@@ -48,14 +47,14 @@ Data-Science/
 
 ### Penjelasan File
 
-dashboard/app.py -> Dashboard utama berbasis Streamlit dan Plotly
-dashboard/app_B.py -> Variasi dashboard untuk kebutuhan pengujian A/B Testing
-dashboard/cleaned_dataset_final.csv -> Dataset akhir hasil feature engineering yang digunakan untuk dashboard dan analisis
-data_preparation_balancing.ipynb -> Tahap preprocessing dan balancing
-dataset_extraction.ipynb -> Tahap ekstraksi dataset 
-feature_engineering.ipynb -> Tahap penambahan metadata sintetis, geolokasi, waktu simulatif, kondisi agronomis, rekomendasi, dan EDA
-ab_testing_dashboard_analysis.ipynb -> Analisis pengujian dashboard menggunakan pendekatan A/B Testing
-url.txt → Kumpulan tautan penting project seperti dashboard, laporan, dan dataset
+dashboard/app.py -> Dashboard utama berbasis Streamlit dan Plotly<br>
+dashboard/app_B.py -> Variasi dashboard untuk kebutuhan pengujian A/B Testing<br>
+dashboard/cleaned_dataset_final.csv -> Dataset akhir hasil feature engineering yang digunakan untuk dashboard dan analisis<br>
+data_preparation_balancing.ipynb -> Tahap preprocessing dan balancing<br>
+dataset_extraction.ipynb -> Tahap ekstraksi dataset<br>
+feature_engineering.ipynb -> Tahap penambahan metadata sintetis, geolokasi, waktu simulatif, kondisi agronomis, rekomendasi, dan EDA<br>
+ab_testing_dashboard_analysis.ipynb -> Analisis pengujian dashboard menggunakan pendekatan A/B Testing<br>
+url.txt → Kumpulan tautan penting project seperti dashboard, laporan, dan dataset<br>
 
 ---
 
