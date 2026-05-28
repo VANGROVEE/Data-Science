@@ -41,8 +41,22 @@ tanaman_pilihan = st.sidebar.multiselect(
     default=df['plant'].unique()
 )
 
+# Filter Rentang Tanggal
+tanggal_pilihan = st.sidebar.date_input(
+    "Pilih Rentang Tanggal:",
+    value=(df['date'].min(), df['date'].max()),
+    min_value=df['date'].min(),
+    max_value=df['date'].max()
+)
+
 # Filter menggunakan .isin() karena bisa memilih lebih dari satu tanaman
-df_filtered = df[(df['location'].isin(lokasi_pilihan)) & (df['plant'].isin(tanaman_pilihan))]
+if len(tanggal_pilihan) == 2:
+    start_date, end_date = tanggal_pilihan
+else:
+    st.warning("⚠️ Silakan pilih rentang tanggal lengkap")
+    st.stop()
+
+df_filtered = df[(df['location'].isin(lokasi_pilihan)) & (df['plant'].isin(tanaman_pilihan)) & (df['date'].between(pd.to_datetime(start_date), pd.to_datetime(end_date)))]
 
 # 4. Menampilkan Metrik Berdasarkan Filter
 col1, col2, col3 = st.columns(3)
@@ -102,7 +116,7 @@ with tab2:
         # Grouping data tren bulanan
         tren_data = (
             df_filtered
-            .groupby([pd.Grouper(key='date', freq='ME'), 'disease'])
+            .groupby([pd.Grouper(key='date', freq='MS'), 'disease'])
             .size()
             .reset_index(name='Jumlah Kasus')
         )
@@ -129,7 +143,6 @@ with tab2:
         )
 
         # Membuat line chart
-        # Membuat line chart
         fig_line = px.line(
             tren_data,
             x='date',
@@ -152,7 +165,7 @@ with tab2:
             hovertemplate=
             "<b>Tanaman:</b> %{customdata[0]}<br>" +
             "%{customdata[1]}<br>" +
-            "<b>Tanggal:</b> %{x|%b %d, %Y}<br>" +
+            "<b>Bulan:</b> %{x|%b %Y}<br>" +
             "<b>Jumlah Kasus:</b> %{y}<extra></extra>"
         )
 

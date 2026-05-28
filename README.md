@@ -1,50 +1,158 @@
 # VANGROVE
 
-Sistem pemantauan kesehatan tanaman berbasis AI dan Web-GIS untuk wilayah Provinsi Sumatera Utara.
+**VANGROVE (Visual Analytics & Navigation for Geographic Regional Output & Variety Evaluation)**
 
-## 📁 Struktur Repositori
-* `app.py`: Aplikasi dashboard interaktif menggunakan Streamlit dan Plotly (Web-GIS & Early Warning System).
-* `preprocessing.ipynb`: Tahap data gathering dari Kaggle, pembersihan duplikat, dan ekstraksi tabel.
-* `feature_engineering.ipynb`: Tahap penambahan fitur geolokasi (Sumut), waktu simulatif, rekomendasi agronomis, dan analisis EDA.
-* `cleaned_dataset_final.csv`: Dataset akhir yang sudah siap digunakan untuk Dashboard dan Modeling.
+---
 
-## 💻 Cara Menjalankan Dashboard Secara Lokal
-Untuk menjalankan dashboard Streamlit di komputer lokal Anda, ikuti langkah-langkah berikut:
+## Dashboard Preview
 
-1. **Clone Repositori:**
-   git clone [https://github.com/VANGROVEE/Data-Science.git](https://github.com/VANGROVEE/Data-Science.git)
-   cd Data-Science
-
-2. **Buat dan Aktifkan Virtual Environment (Direkomendasikan):**
-
-         python -m venv venv
-
-         Windows (PowerShell):  .\venv\Scripts\Activate.ps1
-
-         Mac/Linux:  source venv/bin/activate
-
-3. **Install Library yang Dibutuhkan:**
-   ```bash
-   pip install -r requirements.txt
-
-4. **Jalankan Aplikasi Streamlit:**
-streamlit run app.py
+![alt text](<dashboard_preview.png>)
 
 
-## 📊 Dataset
+## Tech Stack
 
-Dataset citra tanaman menggunakan data sekunder dari Kaggle:
-[Kaggle: Data Science Data](https://www.kaggle.com/datasets/pppiiiy/data-science-data)
+* Python
+* Streamlit
+* Plotly
+* Pandas
+* NumPy
+* KaggleHub
+* OpenStreetMap
 
-> **Catatan:** Jangan mengunggah folder citra mentah ke dalam repositori ini karena batasan ukuran file GitHub. Gunakan `cleaned_dataset_final.csv` untuk referensi data analitik.
+---
 
-## 🚀 Analisis EDA & Fitur Dashboard
+## Struktur Repositori
 
-Kami telah melakukan analisis mendalam terhadap 47.516 baris data citra yang mencakup:
+```plaintext
+Data-Science/
+│
+├── ab_testing/
+│   ├── ab_testing_dashboard_analysis.ipynb
+│   └── ab_testing_dashboard_analysis.py
+│
+├── dashboard/
+│   ├── app.py
+│   ├── app_B.py
+│   └── cleaned_dataset_final.csv
+│
+├── data/
+│
+├── README.md
+├── base_dataset.csv
+├── data_preparation_balancing.ipynb
+├── dataset_extraction.ipynb
+├── feature_engineering.ipynb
+├── requirements.txt
+└── url.txt
+```
 
-* **Peta Sebaran Web-GIS:** Visualisasi geografis interaktif titik koordinat kasus di Provinsi Sumatera Utara, tepatnya pada Kabupaten Karo, Simalungun, Dairi, Langkat, dan Deli Serdang menggunakan Plotly OpenStreetMap.
-* **Early Warning System (EWS):** Grafik tren bulanan interaktif dari April 2024 hingga April 2026 untuk memantau lonjakan kasus dan mendeteksi potensi wabah secara dini.
-* **Analisis Bisnis Komprehensif:** Pemetaan proporsi tanaman paling rentan, sebaran kasus per kabupaten, dan distribusi penyakit spesifik untuk menjawab 5 pertanyaan bisnis utama.
-* **Actionable Insights & Solusi:** Panel panduan rekomendasi otomatis yang menampilkan pemicu lingkungan serta saran penanganan agronomis berdasarkan jenis penyakit dominan yang terdeteksi (seperti *Late Blight* pada Tomat dan *Rust* pada Jagung).
+### Penjelasan File
 
-Dikembangkan sebagai bagian dari Proyek Capstone VANGROVE.
+dashboard/app.py -> Dashboard utama berbasis Streamlit dan Plotly
+dashboard/app_B.py -> Variasi dashboard untuk kebutuhan pengujian A/B Testing
+dashboard/cleaned_dataset_final.csv -> Dataset akhir hasil feature engineering yang digunakan untuk dashboard dan analisis
+data_preparation_balancing.ipynb -> Tahap preprocessing dan balancing
+dataset_extraction.ipynb -> Tahap ekstraksi dataset 
+feature_engineering.ipynb -> Tahap penambahan metadata sintetis, geolokasi, waktu simulatif, kondisi agronomis, rekomendasi, dan EDA
+ab_testing_dashboard_analysis.ipynb -> Analisis pengujian dashboard menggunakan pendekatan A/B Testing
+url.txt → Kumpulan tautan penting project seperti dashboard, laporan, dan dataset
+
+---
+
+## Fitur Dashboard
+
+### 🗺️ Peta Sebaran Web-GIS
+
+Visualisasi geografis interaktif kasus penyakit tanaman pada wilayah Provinsi Sumatera Utara menggunakan Plotly dan OpenStreetMap
+
+### 📈 Tren Waktu (EWS)
+
+Grafik tren bulanan interaktif untuk memantau lonjakan kasus penyakit tanaman dan mendeteksi potensi wabah secara dini
+
+### 📊 Analisis Bisnis & EDA
+
+Dashboard menyediakan visualisasi proporsi tanaman, distribusi penyakit, dan sebaran kasus berdasarkan wilayah
+
+### 💡 Solusi & Rekomendasi
+
+Sistem memberikan rekomendasi agronomis berdasarkan jenis penyakit dan kondisi lingkungan yang terdeteksi
+
+---
+
+## Cara Menjalankan Dashboard Secara Lokal
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/VANGROVEE/Data-Science.git
+cd Data-Science
+```
+
+### 2. Buat dan Aktifkan Virtual Environment
+
+#### Windows (PowerShell)
+
+```bash
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+```
+
+#### Mac/Linux
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Jalankan Dashboard Streamlit
+
+```bash
+streamlit run dashboard/app.py
+```
+
+---
+
+## Deployment
+
+Dashboard dapat diakses melalui Streamlit Cloud:
+
+```txt
+https://dashboardvangrove.streamlit.app/
+```
+
+---
+
+## Dataset
+
+Dataset pada project ini menggunakan dataset hasil preprocessing yang telah dipublikasikan melalui Kaggle untuk kebutuhan integrasi pipeline data dan pengembangan dashboard VANGROVE
+
+Pada tahap feature engineering, dataset diperkaya dengan metadata sintetis seperti geolokasi wilayah Sumatera Utara, waktu simulatif, kondisi agronomis, serta rekomendasi penanganan penyakit tanaman
+
+Hasil akhir proses feature engineering disimpan dalam file `cleaned_dataset_final.csv`
+
+Dataset Kaggle:
+https://www.kaggle.com/datasets/pppiiiy/data-science-data
+
+> **Catatan:**  
+> Sitasi sumber dataset asli yang digunakan dalam proses preprocessing dapat dilihat pada bagian sitasi Kaggle/lampiran laporan teknis
+
+---
+
+## Useful Links
+
+* Dashboard Streamlit: https://dashboardvangrove.streamlit.app/
+* Laporan Teknis: soon
+* Dataset Kaggle: https://www.kaggle.com/datasets/pppiiiy/data-science-data
+* Repository GitHub: https://github.com/VANGROVEE/Data-Science.git
+
+---
+
+## VANGROVE Team
+
+Data Scientist Team

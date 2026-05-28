@@ -87,7 +87,7 @@ with tab2:
         # Grouping data tren bulanan
         tren_data = (
             df_filtered
-            .groupby([pd.Grouper(key='date', freq='ME'), 'disease'])
+            .groupby([pd.Grouper(key='date', freq='MS'), 'disease'])
             .size()
             .reset_index(name='Jumlah Kasus')
         )
@@ -114,7 +114,6 @@ with tab2:
         )
 
         # Membuat line chart
-        # Membuat line chart
         fig_line = px.line(
             tren_data,
             x='date',
@@ -137,7 +136,7 @@ with tab2:
             hovertemplate=
             "<b>Tanaman:</b> %{customdata[0]}<br>" +
             "%{customdata[1]}<br>" +
-            "<b>Tanggal:</b> %{x|%b %d, %Y}<br>" +
+            "<b>Bulan:</b> %{x|%b %Y}<br>" +
             "<b>Jumlah Kasus:</b> %{y}<extra></extra>"
         )
 
