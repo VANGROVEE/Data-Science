@@ -2,7 +2,7 @@ Dashboard Streamlit:
 https://dashboardvangrove.streamlit.app
 
 Laporan Teknis:
-soon
+https://drive.google.com/file/d/1HZFTWsXe8mYl8spmomhOaVKUoLXwMfWF/view?usp=sharing
 
 Kaggle Dataset:
 https://www.kaggle.com/datasets/pppiiiy/data-science-data

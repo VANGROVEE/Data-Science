@@ -11,12 +11,12 @@
 ## Tech Stack
 
 * Python
-* Streamlit
-* Plotly
 * Pandas
 * NumPy
-* KaggleHub
+* Streamlit
+* Plotly
 * OpenStreetMap
+* Kaggle
 
 ---
 
@@ -38,27 +38,38 @@ Data-Science/
 │
 ├── README.md
 ├── base_dataset.csv
+├── dashboard_preview.png
 ├── data_preparation_balancing.ipynb
 ├── dataset_extraction.ipynb
 ├── feature_engineering.ipynb
+├── laporan_teknis.pdf
 ├── requirements.txt
 └── url.txt
 ```
 
 ### Penjelasan File
 
-dashboard/app.py -> Dashboard utama berbasis Streamlit dan Plotly<br>
-dashboard/app_B.py -> Variasi dashboard untuk kebutuhan pengujian A/B Testing<br>
-dashboard/cleaned_dataset_final.csv -> Dataset akhir hasil feature engineering yang digunakan untuk dashboard dan analisis<br>
-data_preparation_balancing.ipynb -> Tahap preprocessing dan balancing<br>
-dataset_extraction.ipynb -> Tahap ekstraksi dataset<br>
-feature_engineering.ipynb -> Tahap penambahan metadata sintetis, geolokasi, waktu simulatif, kondisi agronomis, rekomendasi, dan EDA<br>
-ab_testing_dashboard_analysis.ipynb -> Analisis pengujian dashboard menggunakan pendekatan A/B Testing<br>
-url.txt → Kumpulan tautan penting project seperti dashboard, laporan, dan dataset<br>
+`dashboard/app.py` -> Dashboard utama berbasis Streamlit dan Plotly<br>
+`dashboard/app_B.py` -> Variasi dashboard untuk kebutuhan pengujian A/B Testing<br>
+`dashboard/cleaned_dataset_final.csv` -> Dataset akhir hasil feature engineering yang digunakan untuk dashboard dan analisis<br>
+`data_preparation_balancing.ipynb` -> Tahap preprocessing dan balancing<br>
+`dataset_extraction.ipynb` -> Tahap ekstraksi dataset<br>
+`feature_engineering.ipynb` -> Tahap penambahan metadata sintetis, geolokasi, waktu simulatif, kondisi agronomis, rekomendasi, dan EDA<br>
+`ab_testing_dashboard_analysis.ipynb` -> Analisis pengujian dashboard menggunakan pendekatan A/B Testing<br>
+`laporan_teknis.pdf` -> Laporan Teknis dari awal analisis hingga akhir<br>
+`url.txt` -> Kumpulan tautan penting project seperti dashboard, laporan, dan dataset<br>
 
 ---
 
 ## Fitur Dashboard
+
+### 🔍 Filter Data
+Dashboard menyediakan filter interaktif berdasarkan:<br>
+- Kabupaten/Kota<br>
+- Jenis Tanaman<br>
+- Rentang Tanggal<br>
+
+Filter digunakan untuk membantu eksplorasi data secara dinamis dan spesifik sesuai kebutuhan analisis
 
 ### 🗺️ Peta Sebaran Web-GIS
 
@@ -75,6 +86,10 @@ Dashboard menyediakan visualisasi proporsi tanaman, distribusi penyakit, dan seb
 ### 💡 Solusi & Rekomendasi
 
 Sistem memberikan rekomendasi agronomis berdasarkan jenis penyakit dan kondisi lingkungan yang terdeteksi
+
+### 📋 Data Mentah
+
+Dashboard menyediakan tampilan data mentah hasil feature engineering untuk mendukung transparansi dan eksplorasi data
 
 ---
 
@@ -146,7 +161,7 @@ https://www.kaggle.com/datasets/pppiiiy/data-science-data
 ## Useful Links
 
 * Dashboard Streamlit: https://dashboardvangrove.streamlit.app/
-* Laporan Teknis: soon
+* Laporan Teknis: https://drive.google.com/file/d/1HZFTWsXe8mYl8spmomhOaVKUoLXwMfWF/view?usp=sharing
 * Dataset Kaggle: https://www.kaggle.com/datasets/pppiiiy/data-science-data
 * Repository GitHub: https://github.com/VANGROVEE/Data-Science.git
 
